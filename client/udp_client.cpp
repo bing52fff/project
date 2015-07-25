@@ -1,4 +1,5 @@
 #include "udp_client.h"
+#include "udp_data.h"
 
 udp_client::udp_client() : fd(0), port(PORT), ip(DEF_IP)
 {}
@@ -57,8 +58,13 @@ int main()
 	std::cout << "I am client" << std::endl;
 	udp_client uc;
 	uc.init();
-	std::string msg = "hello";
-	uc.send_msg(msg);
-	uc.recv_msg();
+	udp_data data("shouji", "sust", "working...", "message", "none");
+	std::string msg = data.serialize();
+	while (1)
+	{
+		sleep(1);
+		uc.send_msg(msg);
+//		uc.recv_msg();
+	}
 	return 0;
 }

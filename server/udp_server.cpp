@@ -1,6 +1,7 @@
 #include "udp_server.h"
+#include "udp_data.h"
 
-udp_server::udp_server() : fd(0), ip(DEF_IP), port(PORT)
+udp_server::udp_server() : fd(0), ip(DEF_IP), port(PORT), data()
 {}
 
 udp_server::~udp_server()
@@ -21,11 +22,7 @@ int udp_server::init()
 	bzero(&addr_server, sizeof(struct sockaddr_in));
 	addr_server.sin_family = AF_INET;
 	addr_server.sin_port = htons(port);
-	if (0 == inet_pton(AF_INET, ip.c_str(), &addr_server.sin_addr))
-	{
-		debug_printf("invalid ip\n");
-		return 1;
-	}
+	addr_server.sin_addr.s_addr = htonl(INADDR_ANY);
 	err = bind(fd, (struct sockaddr*)&addr_server, sizeof(addr_server));
 	if (err < 0)
 	{
@@ -35,7 +32,7 @@ int udp_server::init()
 	return 0;
 }
 
-int udp_server::recv_msg()
+int udp_server::recv_msg(std::string &msg)
 {
 	char buf[_SIZE_];
 	memset(buf, 0, sizeof(buf));
@@ -48,12 +45,12 @@ int udp_server::recv_msg()
 		debug_printf("recv msg error\n");
 		return -1;
 	}
+	buf[n] = 0;
+	msg = buf;
 	char remote[INET_ADDRSTRLEN];
 	std::string client_ip = inet_ntop(AF_INET, &addr_client.sin_addr, remote, INET_ADDRSTRLEN);
-	std::cout << user_online.insert(client_ip, addr_client) << std::endl;
-	std::cout << ip << " : " <<  buf << std::endl;
-	user_online.show();
-	return 0;
+	user_online.insert(client_ip, addr_client);
+	return n;
 }
 
 int udp_server::send_msg(const std::string& msg, const struct sockaddr_in* addr_client)
@@ -71,13 +68,20 @@ int udp_server::broadcast_msg(const std::string& msg)
 	return 0;
 }
 
-int post_msg_to_pool()
+int udp_server::post_msg_to_pool(std::string& msg)
 {
+	data.put_data(msg);
 	return 0;
 }
 
-int get_msg_from_pool()
+int udp_server::get_msg_from_pool(std::string& msg)
 {
+	data.get_data(msg);
+	debug_printf(msg);
+
+	udp_data data;
+	data.deserialize(msg);
+	std::cout << data.nick_name << ": " << data.msg << std::endl;
 	return 0;
 }
 
@@ -131,16 +135,41 @@ udp_server::user_info::container::iterator udp_server::user_info::end()
 {
 	return user.end();
 }
+////////////////////////////////////////////////////////////////////////
+
+udp_server us;
+
+void* pro_run(void *arg)
+{
+	std::string msg;
+	while (1)
+	{
+		if (us.recv_msg(msg) > 0)
+		{
+			us.post_msg_to_pool(msg);
+		}
+	}
+	return (void*)0;
+}
+
+void* con_run(void *arg)
+{
+	std::string msg;
+	while(1)
+	{
+		us.get_msg_from_pool(msg);
+	}
+	return (void*)0;
+}
 
 int main()
 {
-	udp_server us;
 	us.init();
-	while (1)
-	{
-		us.recv_msg();
-		us.broadcast_msg("welcome");
-	}
+	pthread_t consumer, producer;
+	pthread_create(&producer, NULL, pro_run, NULL);
+	pthread_create(&consumer, NULL, con_run, NULL);
+	pthread_join(consumer, NULL);
+	pthread_join(producer, NULL);
 	return 0;
 }
 

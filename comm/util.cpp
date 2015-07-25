@@ -3,6 +3,6 @@
 void debug_printf(const std::string& err)
 {
 #ifdef _DEBUG_
-	std::cerr << err;
+	std::cerr << err << std::endl;
 #endif
 }

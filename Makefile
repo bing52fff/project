@@ -1,5 +1,5 @@
 #Makefile
-ROOT_PWD=$(shell pwd)
+ROOT_PWD=.#$(shell pwd)
 CHAT_CLI=udp_client
 CHAT_SER=udp_serverd
 
@@ -12,34 +12,35 @@ PLUG=$(ROOT_PWD)/plug
 LIB=$(ROOT_PWD)/lib
 
 CC=g++
-FLAGS=#-g
+FLAGS=-D_DEBUG_#-g
 LDFLAGS=#-static
+LINK=-lpthread -ljson_linux-gcc-4.8_libmt
 
-INCLUDE=-I$(COMM) -I$(SERVER) -I$(CLIENT) -I$(WINDOW) -I$(DATA_POOL) 
+INCLUDE=-I$(COMM) -I$(SERVER) -I$(CLIENT) -I$(WINDOW) -I$(DATA_POOL)
 LIB_PATH=-L$(LIB)
 
 SRC=$(COMM)/*.cpp $(SERVER)/*.cpp $(CLIENT)/*.cpp $(WINDOW)/*.cpp $(DATA_POOL)/*.cpp
 
-CLI_OBJ=udp_client.o util.o
-SER_OBJ=udp_server.o util.o
+CLI_OBJ=udp_client.o util.o data_pool.o udp_data.o udp_json.o
+SER_OBJ=udp_server.o util.o data_pool.o udp_data.o udp_json.o
 
 all:$(CHAT_CLI) $(CHAT_SER)
 .PHONY:all
 
 $(CHAT_CLI):$(CLI_OBJ)
-	$(CC) -o $@ $^ $(INCLUDE)
+	$(CC) -o $@ $^ $(INCLUDE) $(LINK) $(FLAGS)
 $(CHAT_SER):$(SER_OBJ)
-	$(CC) -o $@ $^ $(INCLUDE)
+	$(CC) -o $@ $^ $(INCLUDE) $(LINK) $(FLAGS)
 %.o:$(COMM)/%.cpp
-	$(CC) -c $<
+	$(CC) -c $< $(INCLUDE) $(LINK) $(FLAGS)
 %.o:$(SERVER)/%.cpp 
-	$(CC) -c $< $(INCLUDE)
+	$(CC) -c $< $(INCLUDE) $(LINK)
 %.o:$(CLIENT)/%.cpp
-	$(CC) -c $< $(INCLUDE)
+	$(CC) -c $< $(INCLUDE) $(LINK)
 %.o:$(WINDOW)/%.cpp
-	$(CC) -c $<
+	$(CC) -c $< $(INCLUDE) $(LINK)
 %.o:$(DATA_POOL)/%.cpp
-	$(CC) -c $<
+	$(CC) -c $< $(INCLUDE) $(LINK)
 
 .PHONY:clean
 clean:
