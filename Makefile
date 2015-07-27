@@ -14,15 +14,15 @@ LIB=$(ROOT_PWD)/lib
 CC=g++
 FLAGS=-D_DEBUG_#-g
 LDFLAGS=#-static
-LINK=-lpthread -ljson_linux-gcc-4.8_libmt
+LINK=-lpthread -ljson_linux-gcc-4.6_libmt -lncurses
 
 INCLUDE=-I$(COMM) -I$(SERVER) -I$(CLIENT) -I$(WINDOW) -I$(DATA_POOL)
 LIB_PATH=-L$(LIB)
 
 SRC=$(COMM)/*.cpp $(SERVER)/*.cpp $(CLIENT)/*.cpp $(WINDOW)/*.cpp $(DATA_POOL)/*.cpp
 
-CLI_OBJ=udp_client.o util.o data_pool.o udp_data.o udp_json.o
-SER_OBJ=udp_server.o util.o data_pool.o udp_data.o udp_json.o
+CLI_OBJ=udp_client.o util.o data_pool.o udp_data.o udp_json.o window.o
+SER_OBJ=udp_server.o util.o data_pool.o udp_data.o udp_json.o window.o
 
 all:$(CHAT_CLI) $(CHAT_SER)
 .PHONY:all

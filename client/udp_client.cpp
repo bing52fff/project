@@ -1,4 +1,5 @@
 #include "udp_client.h"
+#include "window.h"
 #include "udp_data.h"
 
 udp_client::udp_client() : fd(0), port(PORT), ip(DEF_IP)
@@ -52,7 +53,12 @@ int udp_client::recv_msg()
 	std::cout << remote << " : " << buf << std::endl;
 	return n;
 }
-
+int main()
+{
+	window win;
+	return 0;
+}
+/*
 int main()
 {
 	std::cout << "I am client" << std::endl;
@@ -68,3 +74,4 @@ int main()
 	}
 	return 0;
 }
+*/

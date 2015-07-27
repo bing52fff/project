@@ -16,6 +16,7 @@
 #include <semaphore.h>
 
 #include <json/json.h>
+#include <ncurses.h>
 
 #define PORT	8888
 #define	_SIZE_	1024
