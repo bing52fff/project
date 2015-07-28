@@ -146,6 +146,7 @@ void* pro_run(void *arg)
 	{
 		if (us.recv_msg(msg) > 0)
 		{
+			us.broadcast_msg(msg);
 			us.post_msg_to_pool(msg);
 		}
 	}

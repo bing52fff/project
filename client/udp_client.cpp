@@ -56,7 +56,6 @@ int udp_client::get_msg(std::string &msg)
 	msg = buf;
 	char remote[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &addr_server.sin_addr, remote, INET_ADDRSTRLEN);	
-	std::cout << remote << " : " << buf << std::endl;
 	return n;
 }
 void udp_client::add_friend(std::string &friends)
@@ -77,7 +76,8 @@ void udp_client::del_friend(std::string &friends)
 			return ;
 		}
 }
-
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 static window win(100);
 static udp_client cli;
 
@@ -185,6 +185,7 @@ void* draw_input(void *arg)
 		{
 			exit(0);
 		}
+		msg[msg.size()] = 0;
 		scr_in.nick_name = "flypig";
 		scr_in.school = "sust";
 		scr_in.msg = msg;

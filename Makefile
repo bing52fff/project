@@ -12,7 +12,7 @@ PLUG=$(ROOT_PWD)/plug
 LIB=$(ROOT_PWD)/lib
 
 CC=g++
-FLAGS=-D_DEBUG_#-g
+FLAGS=#-D_DEBUG_#-g
 LDFLAGS=#-static
 LINK=-lpthread -ljson_linux-gcc-4.6_libmt -lncurses
 

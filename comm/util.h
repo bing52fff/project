@@ -21,7 +21,8 @@
 
 #define PORT	8888
 #define	_SIZE_	1024
-#define DEF_IP	"127.0.0.1"
+#define DEF_IP	"222.24.75.128"
+//"127.0.0.1"
 #define DEF_POOL_SIZE	100
 
 void debug_printf(const std::string& err_buf);

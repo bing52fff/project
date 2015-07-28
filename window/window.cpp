@@ -39,7 +39,7 @@ void window::clear_win_line(WINDOW *win, int begin, int num)
 std::string window::get_str_from_win(WINDOW *win)
 {
 	char buf[input_size];
-	memset(buf, 0, sizeof(buf));
+	memset(buf, 0, sizeof(input_size));
 	wgetnstr(win, buf, sizeof(buf));
 	return buf;
 }
@@ -60,7 +60,7 @@ void window::create_header_win()
 }
 void window::create_output_win()
 {
-	new_win(LINES/5, 0, COLS*3/4, LINES*3/5);
+	output = new_win(LINES/5, 0, COLS*3/4, LINES*3/5);
 }
 void window::create_friends_list_win()
 {
