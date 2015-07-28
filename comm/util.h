@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <semaphore.h>
+#include <stdlib.h>
 
 #include <json/json.h>
 #include <ncurses.h>
